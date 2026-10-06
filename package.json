@@ -1,0 +1,28 @@
+{
+  "name": "vocab-reader",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.7.5",
+    "@pinia/nuxt": "^0.5.5",
+    "@vueuse/core": "^11.0.0",
+    "@vueuse/nuxt": "^11.0.0",
+    "ag-grid-community": "^36.2.0",
+    "ag-grid-vue3": "^36.2.0",
+    "dexie": "^4.0.8",
+    "kokoro-js": "^1.2.1",
+    "nuxt": "^3.13.0",
+    "pinia": "^2.2.0",
+    "ts-fsrs": "^5.4.2",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.0"
+  }
+}

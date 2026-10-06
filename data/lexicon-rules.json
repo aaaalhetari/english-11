@@ -1,0 +1,14 @@
+{
+  "keep_as_is": [
+    "data","media","news","physics","economics","politics","statistics","ethics","mathematics","electronics",
+    "athletics","gymnastics","linguistics","genetics","logistics","dynamics","graphics","mechanics","aerobics",
+    "species","series","goods","arms","means","glasses","clothes","headquarters","savings","earnings",
+    "belongings","surroundings","customs","manners","remains","premises","proceeds","quarters","odds",
+    "outskirts","thanks","congratulations","riches","jeans","pants","trousers","shorts","scissors","stairs",
+    "lyrics","sports","humanities","electronics","tactics","analytics","diabetes","measles","billiards"
+  ],
+  "ambiguous_forms": [
+    "left","found","bound","rose","fell","felt","stole","spoke","bore","lay","ground","dove","saw","wound"
+  ],
+  "_note": "keep_as_is: plurals that became words of their own (data is not the plural of a word you learn; goods is not 'good'). ambiguous_forms: spellings shared by two different words (left = direction / past of leave). Reading them never counts as evidence; a tap still does, because the card resolves the meaning from the sentence."
+}
