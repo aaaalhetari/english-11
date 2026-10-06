@@ -35,12 +35,18 @@ export function useClaude() {
 
 Two modes, decided by what the user wrote:
 - If the user asked a real question or gave a real topic, that question is what you answer, fully and directly, in the same engaging style. The word lists below are purely optional seasoning for this mode.
-- If the user's message is empty, or only asks you to pick something, surprise them, or give them something to read, you choose the subject yourself: study the candidate word lists below, look for a thread that connects several of them (a shared field, a shared image, a shared idea), and write a short feature article (250-450 words) on the real-world subject that thread suggests. The article's coherence, how genuinely interesting and well-written it is, and how much real, accurate information it carries always matter more than how many words you fit in. Pick something a curious reader would actually want to read, not the most obvious or safest idea.${avoid}
+- If the user's message is empty, or only asks you to pick something, surprise them, or give them something to read, you choose the subject yourself: study the candidate word lists below, look for a thread that connects several of them (a shared field, a shared image, a shared idea), and write a short feature article (250-450 words) on the real-world subject that thread suggests. The article's coherence, how genuinely interesting and well-written it is, and how much real, accurate information it carries always matter more than how many words you fit in. Pick something a curious reader would actually want to read, not the most obvious or safest idea. Favor subjects you can tell well in everyday language - human stories, history, behavior, everyday phenomena, how ordinary things work - over subjects (deep physics, specialist geology, advanced medicine, dense economics) that cannot be told at all without a wall of technical terms. A technical subject is fine only if its core idea genuinely fits in plain words.${avoid}
 
 Language rules:
 - Always reply in English, whatever language the user wrote in. Do not mention that you are switching language.
 - Never talk about language learning. Do not comment on the user's English, do not encourage practice, do not turn the piece into a lesson. The reader wants real content.
-- Keep the content complete and accurate. Adapt only the wording: the reader comfortably knows roughly the ${known} most common English words (out of ${total}). Prefer words inside that range and clear sentences, but never cut or flatten an idea just to make it simple.
+- Keep the content complete and accurate, but the ${known}-word vocabulary limit below is a hard ceiling, not a preference - stay inside it even when that means explaining an idea in more, simpler words instead of one precise but rare one.
+
+Vocabulary ceiling - this is the most important rule in this prompt:
+- The reader comfortably knows roughly the ${known} most common English words (out of ${total}). At least 98 of every 100 words you write must be inside that range (plus ordinary function words - a, the, and, of, etc., which are always fine) or be names/numbers. That leaves room for at most 1-2 harder words per 100.
+- Before using any word you suspect is rare or technical, silently ask: could an ordinary sentence say this with simpler words instead? Almost always, yes - use those instead.
+- On the rare occasion a technical or low-frequency word is genuinely the only way to name something central to the piece (e.g. a key scientific term), you may use it, but immediately gloss it in the same sentence with a short plain-English explanation in parentheses, the way a good science writer would for a general reader - e.g. "the mantle (the thick layer of hot rock beneath Earth's crust)". Do this for every such word, every time; never leave a hard word unexplained.
+- This ceiling applies to the whole piece, including the opening and closing - a vivid first paragraph is not an exception.
 
 Format: plain text only, no Markdown, no asterisks, no headings, no bullet symbols. Use short paragraphs separated by a blank line.
 

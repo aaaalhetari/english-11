@@ -57,6 +57,19 @@ automatically from your repository name.
   else stays plain but remains tappable, so an unexpected word (a technical
   sense like "terminal" in computing) is one tap away.
 
+## Vocabulary ceiling (hard, not a preference)
+
+The reply must keep at least 98 of every 100 words inside the reader's known
+range (function words, names and numbers are free). This used to be a soft
+"prefer" that real content would override; it is now stated as a hard
+ceiling, with an explicit per-100-words quota. A genuinely necessary rare or
+technical word must be glossed in parentheses in plain English the moment
+it is used, every time - never left unexplained. In "Surprise me" mode, the
+model is also steered toward subjects tellable in everyday language (human
+stories, history, behavior, everyday phenomena) over inherently jargon-heavy
+ones (advanced physics, specialist geology, dense economics), since those
+subjects make the ceiling nearly impossible to keep regardless of wording.
+
 ## Reading mode: a real question vs. "Surprise me"
 
 If you ask a real question, that question is the topic and the candidate
