@@ -162,6 +162,54 @@ export function useVocabDB() {
     return q
   }
 
+  // ---------- placement test (writing-difficulty seed only) ----------
+  // Dense, adaptive, positively-phrased: the person taps every word they
+  // genuinely know (not the ones they don't), so the result only grows from
+  // real, demonstrated recall - never from a passing sense of familiarity.
+  // It narrows like a binary search: each round samples densely around the
+  // last known/unknown boundary, so a single stray tap cannot skew the
+  // result the way a fixed two-stage test could.
+  const PLACEMENT_ROUNDS = 5
+  const PLACEMENT_PER_ROUND = 12
+  function placementRound(lo: number, hi: number, exclude: Set<string>) {
+    const words: { lemma: string; rank: number }[] = []
+    for (let i = 0; i < PLACEMENT_PER_ROUND; i++) {
+      const target = Math.round(lo + ((hi - lo) * (i + 0.5)) / PLACEMENT_PER_ROUND)
+      const r = RANKS.find(x => x.rank >= target && !exclude.has(x.lemma))
+      if (r) { words.push({ lemma: r.lemma, rank: r.rank }); exclude.add(r.lemma) }
+    }
+    return words
+  }
+  function placementFirstRound() {
+    const minRank = s.minTrackRank.value ?? 300
+    return placementRound(minRank, TOTAL_WORDS, new Set())
+  }
+  // knownRatio = share of this round's words the person tapped as known.
+  // >= 70% known -> their level is at or above this band, search the upper
+  // half next; otherwise search the lower half. Always re-centers on the
+  // boundary, which is what keeps a lucky/unlucky single word from mattering.
+  function placementNextRound(lo: number, hi: number, knownRatio: number, exclude: Set<string>) {
+    const mid = Math.round((lo + hi) / 2)
+    return knownRatio >= 0.7 ? placementRound(mid, hi, exclude) : placementRound(lo, mid, exclude)
+  }
+  // Final estimate: after all rounds, take every word actually tapped known
+  // across the whole test, sorted by rank, and use the point below which
+  // 80% of them sit - the same "most of it, not all of it" logic as the
+  // real edge, so one remembered rare word cannot inflate the result.
+  function placementResult(allRounds: { lemma: string; rank: number }[][], knownSets: boolean[][]) {
+    const known: number[] = []
+    allRounds.forEach((round, i) => round.forEach((w, j) => { if (knownSets[i][j]) known.push(w.rank) }))
+    if (!known.length) return s.minTrackRank.value ?? 300
+    known.sort((a, b) => a - b)
+    return known[Math.min(known.length - 1, Math.floor(known.length * 0.8))]
+  }
+  async function savePlacement(edge: number) {
+    await setMeta('placementEdge', edge)
+    await setMeta('placementDone', true)
+  }
+  const isPlacementDone = () => getMeta('placementDone', false)
+  const skipPlacement = () => savePlacement(s.minTrackRank.value ?? 300)
+
   // ---------- edge (writing difficulty only) ----------
   async function computeEdge() {
     const pct = s.edgePercentile.value ?? 0.98
@@ -169,10 +217,12 @@ export function useVocabDB() {
     const all = await db.words.toArray()
     const ranks = all.filter(w => w.inSrs && w.state === State.Review).map(w => w.freq_rank).sort((a, b) => a - b)
     if (ranks.length < minN) {
+      const placed = await getMeta<number | null>('placementEdge', null)
+      if (placed != null) return { edge: placed, reviewCount: ranks.length, pct, fromQueue: false, fromPlacement: true }
       const q = await getQueue()
-      return { edge: q.batch.length ? freq[q.batch[0]]?.rank ?? 0 : 0, reviewCount: ranks.length, pct, fromQueue: true }
+      return { edge: q.batch.length ? freq[q.batch[0]]?.rank ?? 0 : 0, reviewCount: ranks.length, pct, fromQueue: true, fromPlacement: false }
     }
-    return { edge: ranks[Math.min(ranks.length - 1, Math.floor(ranks.length * pct))], reviewCount: ranks.length, pct, fromQueue: false }
+    return { edge: ranks[Math.min(ranks.length - 1, Math.floor(ranks.length * pct))], reviewCount: ranks.length, pct, fromQueue: false, fromPlacement: false }
   }
 
   // ---------- categories & snapshots ----------
@@ -414,5 +464,10 @@ export function useVocabDB() {
     await db.words.bulkPut(rows)
   }
 
-  return { recordExposures, registerClick, getCandidates, markSent, reconcileSent, getQueue, computeEdge, categoryOf, getStats, getFullList, getAllWords, getIgnoredWords, getDaily, getToday, resetWord, saveTurn, getTurns, getChanges, exportData, importData, seedDemo, getMeta, setMeta, TOTAL_WORDS }
+  return {
+    recordExposures, registerClick, getCandidates, markSent, reconcileSent, getQueue, computeEdge, categoryOf,
+    getStats, getFullList, getAllWords, getIgnoredWords, getDaily, getToday, resetWord, saveTurn, getTurns, getChanges,
+    exportData, importData, seedDemo, getMeta, setMeta, TOTAL_WORDS,
+    placementFirstRound, placementNextRound, placementResult, savePlacement, isPlacementDone, skipPlacement, PLACEMENT_ROUNDS
+  }
 }

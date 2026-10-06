@@ -32,6 +32,10 @@ async function handleExport() {
   const a = document.createElement('a'); a.href = url; a.download = `vocab_backup_${new Date().toISOString().slice(0, 10)}.json`; a.click()
   URL.revokeObjectURL(url)
 }
+async function redoPlacement() {
+  await vocab.setMeta('placementDone', false)
+  location.reload()
+}
 function triggerImport() {
   const el = document.createElement('input'); el.type = 'file'; el.accept = 'application/json'
   el.onchange = async (e: any) => { const f = e.target.files[0]; if (f) { await vocab.importData(await f.text()); await refresh() } }
@@ -82,7 +86,8 @@ onMounted(refresh)
             </div>
             <p class="text-[11px] text-slate-400">
               Only tells the AI how simply to write: the rank below which {{ Math.round(edge.pct * 100) }}% of your review words sit.
-              <template v-if="edge.fromQueue">Until {{ st.minReviewForEdge.value }} words reach review ({{ edge.reviewCount }} so far) it follows the queue position.</template>
+              <template v-if="edge.fromPlacement">Until {{ st.minReviewForEdge.value }} words reach review ({{ edge.reviewCount }} so far) it follows your placement test result.</template>
+              <template v-else-if="edge.fromQueue">Until {{ st.minReviewForEdge.value }} words reach review ({{ edge.reviewCount }} so far) it follows the queue position.</template>
             </p>
           </div>
 
@@ -245,6 +250,8 @@ onMounted(refresh)
               <button class="flex-1 text-xs bg-slate-100 rounded-lg px-3 py-2" @click="handleExport">⬇ Export</button>
               <button class="flex-1 text-xs bg-slate-100 rounded-lg px-3 py-2" @click="triggerImport">⬆ Import</button>
             </div>
+            <button class="w-full text-xs bg-slate-100 rounded-lg px-3 py-2" @click="redoPlacement">↻ Redo the placement test</button>
+            <p class="text-[11px] text-slate-400">Only affects writing difficulty until enough words reach review on their own - never which words you learn.</p>
           </div>
         </template>
       </div>

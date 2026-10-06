@@ -77,6 +77,22 @@ Required words (the queue's carried-over words) are no longer absolute in
 this mode: the model makes a real effort to weave each one in naturally,
 but leaves one out rather than bend the writing around it.
 
+## The placement test (writing difficulty only)
+
+On first use, five rounds of about 12 words each ask you to tap every word
+you genuinely know (not the ones you don't) - each round samples densely
+around your current known/unknown boundary and narrows toward your real
+level, so a single lucky or unlucky word cannot skew the result. The final
+estimate is the point below which 80% of your known taps sit, not the single
+hardest word you happened to recognize.
+
+This result sets nothing except how simply the AI writes in your first
+replies. It never adds a word to the scheduler, never changes the daily
+queue (which still starts at rank 300 and climbs exactly as always), and is
+automatically replaced the moment 30 words reach review through your own
+reading. You can skip it (starts at the simplest setting) or redo it later
+from Settings.
+
 ## How the learning loop works
 
 **Only one way into the scheduler:** 10 views (fixed for every word, whatever
